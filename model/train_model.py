@@ -31,6 +31,7 @@ pipeline.fit(df['text'], df['label'])
 # Save the trained model
 joblib.dump(pipeline, 'mood_classifier.pkl')
 
+
 print("\n✅ Model trained and saved as 'mood_classifier.pkl'")
 
 # Test prediction

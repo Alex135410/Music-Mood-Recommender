@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Mood Recommender</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+        input, button { padding: 0.5rem; font-size: 1rem; }
+        button { margin-left: 0.5rem; cursor: pointer; }
+        .songs { margin-top: 1rem; }
+        .song { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+<h1>Music Mood Recommender</h1>
+<p>Type how you feel and get song recommendations:</p>
+<input type="text" id="moodInput" placeholder="Enter your mood or feelings" size="40" />
+<button onclick="predictMood()">Get Recommendations</button>
+
+<h2 id="predictedMood"></h2>
+<div id="songList" class="songs"></div>
+
+<script>
+    async function predictMood() {
+        const input = document.getElementById('moodInput').value.trim();
+        const moodElem = document.getElementById('predictedMood');
+        const songListElem = document.getElementById('songList');
+
+        moodElem.textContent = '';
+        songListElem.innerHTML = '';
+
+        if (!input) {
+            alert('Please enter some text!');
+            return;
+        }
+
+        moodElem.textContent = 'Loading...';
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: input })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            moodElem.textContent = `Predicted mood: ${data.mood}`;
+
+            if (data.songs && data.songs.length > 0) {
+                data.songs.forEach(song => {
+                    const songDiv = document.createElement('div');
+                    songDiv.className = 'song';
+                    songDiv.innerHTML = `<a href="${song.url}" target="_blank">${song.title}</a> by ${song.artist}`;
+                    songListElem.appendChild(songDiv);
+                });
+            } else {
+                songListElem.textContent = 'No songs found for this mood.';
+            }
+
+        } catch (error) {
+            moodElem.textContent = '';
+            songListElem.textContent = 'Error fetching recommendations.';
+            console.error('Error:', error);
+        }
+    }
+</script>
+</body>
+</html>
