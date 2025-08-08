@@ -61,11 +61,12 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
 3. **Install required Python packages**
    ```bash
    pip install -r requirements.txt
-4. **Set environment variables for Spotify credentials**
-   On macOS/Linux:
+4. **Set environment variables for Spotify credentials**  
+   On macOS/Linux:  
    ```bash
    export SPOTIFY_CLIENT_ID='your_client_id_here'
    export SPOTIFY_CLIENT_SECRET='your_client_secret_here'
+
 
    On Windows (PowerShell):
    ```powershell
