@@ -79,8 +79,9 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
 
    Open the index.html file in your preferred browser (either directly or through a local server)
 8. **Use the application**
-   - Enter a mood or feeling in the input box.
-   - Submit to receive a recommended playlist and song list from Spotify.
+  - Enter a mood or feeling in the input box.
+  - Submit to receive a recommended playlist and song list from Spotify.
+  
 
    
 
