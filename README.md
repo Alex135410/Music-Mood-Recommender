@@ -55,9 +55,9 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
    git clone https://github.com/yourusername/music-mood-recommender.git
    cd music-mood-recommender/server
 2. **Create and activate a virtual environment** (optional but recommended)
-  ``bash
-  python3 -m venv venv
-  source venv/bin/activate     # On Windows use: venv\Scripts\activate
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate     # On Windows use: venv\Scripts\activate
 3. **Install required Python packages**
    `bash
   pip install -r requirements.txt
