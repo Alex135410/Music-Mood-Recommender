@@ -68,10 +68,9 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
    export SPOTIFY_CLIENT_SECRET='your_client_secret_here'
 
    On Windows (PowerShell):
-
-  ```powershell
-  setx SPOTIFY_CLIENT_ID "your_client_id_here"
-  setx SPOTIFY_CLIENT_SECRET "your_client_secret_here"
+   ```powershell
+   setx SPOTIFY_CLIENT_ID "your_client_id_here"
+   setx SPOTIFY_CLIENT_SECRET "your_client_secret_here"
 
 5. **Run the Flask server**
    ```bash
