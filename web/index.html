@@ -4,71 +4,182 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Music Mood Recommender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
-        input, button { padding: 0.5rem; font-size: 1rem; }
-        button { margin-left: 0.5rem; cursor: pointer; }
-        .songs { margin-top: 1rem; }
-        .song { margin-bottom: 0.5rem; }
+        /* Reset and base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        /* Input form */
+        form {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+        }
+        button {
+            background-color: #2563eb;
+            border: none;
+            color: white;
+            padding: 0 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1e40af;
+        }
+
+        /* Result card */
+        .result-card {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .result-card h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        ul.song-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0 0;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        ul.song-list li {
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.4rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        ul.song-list li span.artist {
+            color: #9ca3af;
+            font-weight: 400;
+            font-size: 0.9rem;
+            margin-left: 0.4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            form {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+                padding: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
-<h1>Music Mood Recommender</h1>
-<p>Type how you feel and get song recommendations:</p>
-<input type="text" id="moodInput" placeholder="Enter your mood or feelings" size="40" />
-<button onclick="predictMood()">Get Recommendations</button>
 
-<h2 id="predictedMood"></h2>
-<div id="songList" class="songs"></div>
+<h1>Music Mood Recommender</h1>
+
+<form id="moodForm">
+    <input type="text" id="moodInput" placeholder="Enter your mood or feelings..." required />
+    <button type="submit">Get Songs</button>
+</form>
+
+<div id="result" class="result-card" style="display:none;">
+    <h2 id="playlistName"></h2>
+    <ul class="song-list" id="songsList"></ul>
+</div>
 
 <script>
-    async function predictMood() {
-        const input = document.getElementById('moodInput').value.trim();
-        const moodElem = document.getElementById('predictedMood');
-        const songListElem = document.getElementById('songList');
+    const form = document.getElementById('moodForm');
+    const moodInput = document.getElementById('moodInput');
+    const resultDiv = document.getElementById('result');
+    const playlistName = document.getElementById('playlistName');
+    const songsList = document.getElementById('songsList');
 
-        moodElem.textContent = '';
-        songListElem.innerHTML = '';
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const mood = moodInput.value.trim();
+        if (!mood) return;
 
-        if (!input) {
-            alert('Please enter some text!');
-            return;
-        }
-
-        moodElem.textContent = 'Loading...';
+        playlistName.textContent = '';
+        songsList.innerHTML = '';
+        resultDiv.style.display = 'none';
 
         try {
             const response = await fetch('http://127.0.0.1:5000/predict', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: input })
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: mood })
             });
-
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
             const data = await response.json();
 
-            moodElem.textContent = `Predicted mood: ${data.mood}`;
+            if (!response.ok) throw new Error(data.error || 'Failed to get songs');
 
-            if (data.songs && data.songs.length > 0) {
-                data.songs.forEach(song => {
-                    const songDiv = document.createElement('div');
-                    songDiv.className = 'song';
-                    songDiv.innerHTML = `<a href="${song.url}" target="_blank">${song.title}</a> by ${song.artist}`;
-                    songListElem.appendChild(songDiv);
-                });
-            } else {
-                songListElem.textContent = 'No songs found for this mood.';
-            }
+            playlistName.textContent = `Playlist: ${data.playlist_name} (Mood: ${data.mood})`;
+            data.songs.forEach(song => {
+                const li = document.createElement('li');
+                li.textContent = song.name;
+                if(song.artists) {
+                    const artistSpan = document.createElement('span');
+                    artistSpan.className = 'artist';
+                    artistSpan.textContent = `by ${song.artists}`;
+                    li.appendChild(artistSpan);
+                }
+                songsList.appendChild(li);
+            });
 
-        } catch (error) {
-            moodElem.textContent = '';
-            songListElem.textContent = 'Error fetching recommendations.';
-            console.error('Error:', error);
+            resultDiv.style.display = 'block';
+
+        } catch (err) {
+            playlistName.textContent = `Error: ${err.message}`;
+            resultDiv.style.display = 'block';
         }
-    }
+    });
 </script>
+
 </body>
 </html>
