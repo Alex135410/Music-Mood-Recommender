@@ -59,8 +59,8 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
    python3 -m venv venv
    source venv/bin/activate     # On Windows use: venv\Scripts\activate
 3. **Install required Python packages**
-   `bash
-  pip install -r requirements.txt
+   ```bash
+   pip install -r requirements.txt
 4. **Set environment variables for Spotify credentials**
    On macOS/Linux:
    `bash
