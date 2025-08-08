@@ -8,8 +8,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Spotify credentials (you will put your credentials here)
-CLIENT_ID = '32cdd36cd9a948bfae976cd9f67746e4'
-CLIENT_SECRET = '66a9e1ebf0904b3083b38ee161d80aee'
+CLIENT_ID = 'YOUR_SPOTIFY_CREDENTIALS'
+CLIENT_SECRET = 'YOUR_SPOTIFY_CREDENTIALS'
 
 def get_spotify_token():
     auth_url = 'https://accounts.spotify.com/api/token'
