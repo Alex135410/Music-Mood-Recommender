@@ -76,8 +76,9 @@ Follow these steps to deploy and run the Music Mood Recommender locally:
    ```bash
    python app.py
 6. **Open the frontend**
+
    Open the index.html file in your preferred browser (either directly or through a local server)
-7. **Use the application**
+8. **Use the application**
    - Enter a mood or feeling in the input box.
    - Submit to receive a recommended playlist and song list from Spotify.
 
